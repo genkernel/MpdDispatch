@@ -1,0 +1,9 @@
+//
+// Prefix header for all source files of the 'MpdDispath' target in the 'MpdDispath' project
+//
+
+#ifdef __OBJC__
+	#import <Foundation/Foundation.h>
+
+	#include <mpd/client.h>
+#endif
