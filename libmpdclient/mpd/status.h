@@ -40,6 +40,7 @@
 #define MPD_STATUS_H
 
 #include <mpd/compiler.h>
+#include <mpd/audio_format.h>
 
 #include <stdbool.h>
 
@@ -69,7 +70,89 @@ struct mpd_audio_format;
  *
  * Holds information about MPD's status.
  */
-struct mpd_status;
+/**
+ * Information about MPD's current status.
+ */
+struct mpd_status {
+	/** 0-100, or MPD_STATUS_NO_VOLUME when there is no volume support */
+	int volume;
+	
+	/** Queue repeat mode enabled? */
+	bool repeat;
+	
+	/** Random mode enabled? */
+	bool random;
+	
+	/** Single song mode enabled? */
+	bool single;
+	
+	/** Song consume mode enabled? */
+	bool consume;
+	
+	/** Number of songs in the queue */
+	unsigned queue_length;
+	
+	/**
+	 * Queue version, use this to determine when the playlist has
+	 * changed.
+	 */
+	unsigned queue_version;
+	
+	/** MPD's current playback state */
+	enum mpd_state state;
+	
+	/** crossfade setting in seconds */
+	unsigned crossfade;
+	
+	/** Mixramp threshold in dB */
+	float mixrampdb;
+	
+	/** Mixramp extra delay in seconds */
+	float mixrampdelay;
+	
+	/**
+	 * If a song is currently selected (always the case when state
+	 * is PLAY or PAUSE), this is the position of the currently
+	 * playing song in the queue, beginning with 0.
+	 */
+	int song_pos;
+	
+	/** Song ID of the currently selected song */
+	int song_id;
+	
+	/** The same as song_pos, but for the next song to be played */
+	int next_song_pos;
+	
+	/** Song ID of the next song to be played */
+	int next_song_id;
+	
+	/**
+	 * Time in seconds that have elapsed in the currently
+	 * playing/paused song.
+	 */
+	unsigned elapsed_time;
+	
+	/**
+	 * Time in milliseconds that have elapsed in the currently
+	 * playing/paused song.
+	 */
+	unsigned elapsed_ms;
+	
+	/** length in seconds of the currently playing/paused song */
+	unsigned total_time;
+	
+	/** current bit rate in kbps */
+	unsigned kbit_rate;
+	
+	/** the current audio format */
+	struct mpd_audio_format audio_format;
+	
+	/** non-zero if MPD is updating, 0 otherwise */
+	unsigned update_id;
+	
+	/** error message */
+	char *error;
+};
 
 #ifdef __cplusplus
 extern "C" {

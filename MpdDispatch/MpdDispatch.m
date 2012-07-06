@@ -41,6 +41,7 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 	NSArray *containers[MpdSupportedActionsCount];
 }
 @synthesize helpers, playlist, player, directory, search;
+@dynamic lastErrorCode, lastOperationHasFailed;
 
 - (id)init {
 	self = [super init];
@@ -118,6 +119,10 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 		return MPD_ERROR_TIMEOUT;
 	}
 	return mpd_connection_get_error(conn);
+}
+
+- (NSUInteger)lastOperationHasFailed {
+	return MPD_ERROR_SUCCESS != self.lastErrorCode;
 }
 
 - (BOOL)isDisconnected {

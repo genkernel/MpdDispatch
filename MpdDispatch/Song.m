@@ -7,29 +7,31 @@
 //
 
 #import "Song.h"
+#import "Song+Internals.h"
 
 @implementation Song {
-	struct mpd_song *song;
 	NSString *tags[MPD_TAG_COUNT];
 }
+@synthesize data;
 @synthesize uri, title, duration;
+@dynamic durationSecs;
 
 - (id)initWithSongData:(struct mpd_song *)origin {
 	self = [self init];
 	if (self) {
-		song = origin;
+		data = origin;
 		
 		// Parse * tags.
 		for (int tag=0; tag<MPD_TAG_COUNT; tag++) {
 			const char *value;
 			//while ((value = mpd_song_get_tag(song, type, 0)) != NULL) {
-			if ((value = mpd_song_get_tag(song, tag, 0)) != NULL) {
+			if ((value = mpd_song_get_tag(data, tag, 0)) != NULL) {
 				tags[tag] = [NSString stringWithUTF8String:value];
 			}
 		}
 		
 		// Parse uri.
-		const char *uriValue = mpd_song_get_uri(song);
+		const char *uriValue = mpd_song_get_uri(data);
 		if (uriValue) {
 			uri = [NSString stringWithUTF8String:uriValue];
 		}
@@ -40,23 +42,14 @@
 			title = [self.uri lastPathComponent];
 		}
 		
-		// Parse duration: HH:MM:SS
-		unsigned total = mpd_song_get_duration(song);
-		unsigned hrs = total / 3600;
-		unsigned mins = (total % 3600) / 60;
-		unsigned secs = (total % 3600) % 60;
-		
-		NSString * (^twoDigits)(unsigned value) = ^(unsigned value) {
-			NSString *format = value>9 ? @"%d" : @"0%d";
-			return [NSString stringWithFormat:format, value];
-		};
-		duration = [NSString stringWithFormat:@"%@:%@:%@", twoDigits(hrs), twoDigits(mins), twoDigits(secs)];
+		unsigned total = mpd_song_get_duration(data);
+		duration = [[self class] durationWithSeconds:total];
 	}
 	return self;
 }
 
 - (void)dealloc {
-	mpd_song_free(song);
+	mpd_song_free(data);
 	
 	for (int tag=0; tag<MPD_TAG_COUNT; tag++) {
 		tags[tag] = nil;
@@ -65,6 +58,27 @@
 
 - (NSString *)tagValueOfType:(SongTags)tag {
 	return tags[tag];
+}
+
+// durationWithSeconds:
+// Represents seconds amount in format: HH:MM:SS.
++ (NSString *)durationWithSeconds:(NSUInteger)total {
+	unsigned hrs = total / 3600;
+	unsigned mins = (total % 3600) / 60;
+	unsigned secs = (total % 3600) % 60;
+	
+	NSString * (^twoDigits)(unsigned value) = ^(unsigned value) {
+		NSString *format = value>9 ? @"%d" : @"0%d";
+		return [NSString stringWithFormat:format, value];
+	};
+	NSString *duration = [NSString stringWithFormat:@"%@:%@:%@", twoDigits(hrs), twoDigits(mins), twoDigits(secs)];
+	return duration;
+}
+
+#pragma mark Properties
+
+- (NSUInteger)durationSecs {
+	return mpd_song_get_duration(data);
 }
 
 @end

@@ -17,8 +17,5 @@ typedef enum {
 
 @interface Status : NSObject
 - (id)initWithStatusData:(struct mpd_status *)status;
-- (PlayerState)state;
-
-@property (assign, nonatomic, readonly) int volume, queueVersion, queueLength;
-@property (assign, nonatomic, readonly) BOOL repeat, random;
+@property (assign, nonatomic, readonly)PlayerState state;
 @end

@@ -121,6 +121,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18022B6715A6C0EF004D6417 /* Status+Internals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Status+Internals.h"; sourceTree = "<group>"; };
+		18022B6915A6D9B9004D6417 /* Song+Internals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Song+Internals.h"; sourceTree = "<group>"; };
 		1813E80915A415DF00D060BC /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Search.h; sourceTree = "<group>"; };
 		1813E80A15A415DF00D060BC /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Search.m; sourceTree = "<group>"; };
 		1813E80F15A4317A00D060BC /* Library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Library.h; sourceTree = "<group>"; };
@@ -435,8 +437,10 @@
 			children = (
 				18BADA6015814556000A2A7F /* Song.h */,
 				18BADA6115814556000A2A7F /* Song.m */,
+				18022B6915A6D9B9004D6417 /* Song+Internals.h */,
 				18BADA65158149FC000A2A7F /* Status.h */,
 				18BADA66158149FC000A2A7F /* Status.m */,
+				18022B6715A6C0EF004D6417 /* Status+Internals.h */,
 			);
 			name = Player;
 			sourceTree = "<group>";

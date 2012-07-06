@@ -12,12 +12,5 @@
 
 @interface Library : NSObject
 - (id)initWithDirectory:(Directory *)directory rootPath:(NSString *)path;
-
-@property (strong, nonatomic, readonly) LibraryItems *artists, *albums, *genres, *composers;
-
-//@property (strong, nonatomic, readonly) NSDictionary *artists, *albums, *genres, *composers;
-//@property (strong, nonatomic, readonly) NSArray *songs, *playlists;
-
-//@property (strong, nonatomic, readonly) NSArray *artistsSectionIndexTitles, *albumsSectionIndexTitles, *genresSectionIndexTitles, *composersSectionIndexTitles;
-//@property (strong, nonatomic, readonly) NSArray *songsSectionIndexTitles, *playlistsSectionIndexTitles;
+- (LibraryItems *)sortItemsWithTag:(SongTags)tag;
 @end

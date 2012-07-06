@@ -23,7 +23,7 @@
 - (BOOL)authenticate:(NSString *)password;
 - (void)disconnect;
 
-- (NSUInteger)lastErrorCode;
+@property (assign, nonatomic, readonly) NSUInteger lastErrorCode, lastOperationHasFailed;
 - (BOOL)isDisconnected;
 - (NSString *)version;
 

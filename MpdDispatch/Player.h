@@ -18,9 +18,14 @@
 - (BOOL)next;
 - (BOOL)prev;
 - (BOOL)addURI:(NSString *)uri;
-- (Song *)currentSong;
-- (Status *)status;
 - (BOOL)loadAndPlayURI:(NSString *)uri;
 
 @property (strong, nonatomic, readonly) NSArray *queue;
+@property (strong, nonatomic, readonly) Status *status;
+@property (strong, nonatomic, readonly) Song *currentSong;
+@property (assign, nonatomic) BOOL repeat, random;
+@property (assign, nonatomic) NSUInteger volume;
+// seek. Duration progress for currentSong.
+@property (assign, nonatomic) NSUInteger seek;
+@property (assign, nonatomic) BOOL autoplay;
 @end

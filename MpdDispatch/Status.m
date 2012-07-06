@@ -7,48 +7,23 @@
 //
 
 #import "Status.h"
+#import "Status+Internals.h"
 
-@implementation Status {
-	struct mpd_status *status;
-}
-@dynamic volume, repeat;
+@implementation Status
+@synthesize data, state;
 
 - (id)initWithStatusData:(struct mpd_status *)origin {
 	self = [self init];
 	if (self) {
-		status = origin;
+		data = origin;
+		
+		state = mpd_status_get_state(data);
 	}
 	return self;
 }
 
 - (void)dealloc {
-	mpd_status_free(status);
-}
-
-- (PlayerState)state {
-	return mpd_status_get_state(status);
-}
-
-#pragma mark Properties
-
-- (int)volume {
-	return mpd_status_get_volume(status);
-}
-
-- (int)queueVersion {
-	return mpd_status_get_queue_version(status);
-}
-
-- (int)queueLength {
-	return mpd_status_get_queue_length(status);
-}
-
-- (BOOL)repeat {
-	return mpd_status_get_repeat(status);
-}
-
-- (BOOL)random {
-	return mpd_status_get_random(status);
+	mpd_status_free(data);
 }
 
 @end

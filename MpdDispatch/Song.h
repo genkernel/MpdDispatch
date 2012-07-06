@@ -18,6 +18,9 @@ typedef enum {
 
 @interface Song : NSObject
 - (id)initWithSongData:(struct mpd_song *)song;
-@property (strong, nonatomic, readonly) NSString *uri, *title, *duration;
 - (NSString *)tagValueOfType:(SongTags)type;
++ (NSString *)durationWithSeconds:(NSUInteger)value;
+
+@property (strong, nonatomic, readonly) NSString *uri, *title, *duration;
+@property (assign, nonatomic, readonly) NSUInteger durationSecs;
 @end
