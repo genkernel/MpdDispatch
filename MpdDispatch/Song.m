@@ -14,7 +14,7 @@
 }
 @synthesize data;
 @synthesize uri, title, duration;
-@dynamic durationSecs;
+@dynamic durationSecs, position;
 
 - (id)initWithSongData:(struct mpd_song *)origin {
 	self = [self init];
@@ -79,6 +79,10 @@
 
 - (NSUInteger)durationSecs {
 	return mpd_song_get_duration(data);
+}
+
+- (NSUInteger)position {
+	return mpd_song_get_pos(data);
 }
 
 @end

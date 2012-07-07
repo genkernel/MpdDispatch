@@ -82,22 +82,25 @@ static NSString *rootDirectoryPath = @"";
 				NSLog(@"WARN. Unknown entity.");
 				break;
 			case MPD_ENTITY_TYPE_SONG: {
-				const struct mpd_song *song = mpd_entity_get_song(entity);
+				const struct mpd_song *pureSong = mpd_entity_get_song(entity);
+				const struct mpd_song *song = mpd_song_dup(pureSong);
 				Song *newSong = [[Song alloc] initWithSongData:(struct mpd_song *)song];
 				[foundSongs addObject:newSong];
 			}
 				break;
 			case MPD_ENTITY_TYPE_DIRECTORY: {
+				// mpd_directory_dup();
 				const struct mpd_directory *directory = mpd_entity_get_directory(entity);
 				NSString *directoryName = [NSString stringWithUTF8String:mpd_directory_get_path(directory)];
 				if ([directoryName isEqualToString:parentDirectory]) {
-					NSLog(@"Tham mai directoryName equals?");
+					NSLog(@"directoryName equals - Tham mai?");
 					break;
 				}
 				[foundDirectories addObject:directoryName];
 			}
 				break;
 			case MPD_ENTITY_TYPE_PLAYLIST: {
+				//mpd_playlist_dup();
 				const struct mpd_playlist *playlist = mpd_entity_get_playlist(entity);
 				NSString *playlistPath = [NSString stringWithUTF8String:mpd_playlist_get_path(playlist)];
 				[foundPlaylists addObject:playlistPath];

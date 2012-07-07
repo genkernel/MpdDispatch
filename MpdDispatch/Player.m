@@ -14,53 +14,155 @@
 @interface Player()
 - (Status *)loadStatus;
 - (Song *)loadCurentSong;
+- (NSArray *)loadQueue;
 @property (assign, nonatomic, readonly) int queueVersion, queueLength;
 @end
 
-@implementation Player
+@implementation Player {
+	NSUInteger lastUpdateQueueVersion;
+}
 @synthesize queue, status, currentSong, autoplay;
 @dynamic volume, repeat, seek;
 @dynamic queueVersion, queueLength;
+@dynamic playing;
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		lastUpdateQueueVersion = -1;
+	}
+	return self;
+}
 
 - (void)didAuthenticate {
 	[super didAuthenticate];
 	
-	currentSong = [self loadCurentSong];
-	status = [self loadStatus];
+	[self update];
+}
+
+#pragma mark Private
+
+- (NSArray *)loadQueue {
+	NSMutableArray *items = nil;
+	BOOL isFullUpdate = nil==self.queue;
 	
-	NSMutableArray *items = [NSMutableArray arrayWithCapacity:self.queueLength];
-	for (int i=0; i<self.queueLength; i++) {
-		struct mpd_song *song = mpd_run_get_queue_song_pos(self.conn, i);
-		if (NULL == song) {
-			NSLog(@"ERR. Failed to retrieve enqueued song.");
-			continue;
+	if (isFullUpdate) {
+		items = [NSMutableArray arrayWithCapacity:self.queueLength];
+		
+		for (int i=0; i<self.queueLength; i++) {
+			struct mpd_song *song = mpd_run_get_queue_song_pos(self.conn, i);
+			if (NULL == song) {
+				NSLog(@"ERR. Failed to retrieve enqueued song.");
+				continue;
+			}
+			Song *newSong = [[Song alloc] initWithSongData:song];
+			[items addObject:newSong];
 		}
-		Song *newSong = [[Song alloc] initWithSongData:song];
-		[items addObject:newSong];
+		queue = [NSArray arrayWithArray:items];
+	} else {
+		BOOL completed = mpd_send_queue_changes_meta(self.conn, lastUpdateQueueVersion);
+		if (!completed) {
+			NSLog(@"ERR. mpd_send_queue_changes_meta");
+			return nil;
+		}
+		items = [NSMutableArray arrayWithArray:self.queue];
+		if (items.count > self.queueLength) {
+			for (int i=items.count-1; i>=self.queueLength; i--) {
+				[items removeObjectAtIndex:i];
+			}
+		}
+		
+		struct mpd_song *song = NULL;
+		while (NULL != (song = mpd_recv_song(self.conn))) {
+			Song *updatedSong = [[Song alloc] initWithSongData:song];
+			if (updatedSong.position < items.count) {
+				[items replaceObjectAtIndex:updatedSong.position withObject:updatedSong];
+			} else {
+				[items addObject:updatedSong];
+			}
+		}
 	}
-	queue = [NSArray arrayWithArray:items];
 	
 	BOOL completed = mpd_response_finish(self.conn);
 	if (!completed) {
 		NSLog(@"ERR. mpd_response_finish");
-		return;
+		return nil;
+	}
+	return items;
+}
+
+- (Song *)loadCurentSong {
+	struct mpd_song *song = mpd_run_current_song(self.conn);
+	if (!song) {
+		// No current song playing.
+		return nil;
+	}
+	return [[Song alloc] initWithSongData:song];
+}
+
+- (Status *)loadStatus {
+	struct mpd_status *data = mpd_run_status(self.conn);
+	if (!data) {
+		NSLog(@"mpd_error: %d", mpd_connection_get_error(self.conn));
+		return nil;
+	}
+	return [[Status alloc] initWithStatusData:data];
+}
+
+#pragma mark Instance methods
+
+// update
+// Requests curentSong, status and playing queue(if queue changed) update.
+- (void)update {
+	currentSong = [self loadCurentSong];
+	status = [self loadStatus];
+	
+	if (self.queueVersion != lastUpdateQueueVersion) {
+		queue = [self loadQueue];
+		if (!queue) {
+			NSLog(@"ERR. Failed to update queue.");
+			return;
+		}
+		lastUpdateQueueVersion = self.queueVersion;
 	}
 }
 
 - (BOOL)stop {
-	return mpd_run_stop(self.conn);
+	BOOL completed = mpd_run_stop(self.conn);
+	if (completed) {
+		self.status.state = PlayerStateStopped;
+	}
+	return completed;
 }
 
+// play
+// Resumes playback.
 - (BOOL)play {
-	return mpd_run_play(self.conn);
+	BOOL completed = mpd_run_play(self.conn);
+	if (completed) {
+		self.status.state = PlayerStatePlaying;
+	}
+	return completed;
 }
 
 - (BOOL)pause {
-	return mpd_run_pause(self.conn, true);
+	BOOL completed = mpd_run_pause(self.conn, true);
+	if (completed) {
+		self.status.state = PlayerStatePaused;
+	}
+	return completed;
 }
 
 - (BOOL)toggle {
-	return mpd_run_toggle_pause(self.conn);
+	BOOL completed = mpd_run_toggle_pause(self.conn);
+	if (completed) {
+		if (PlayerStatePlaying==self.status.state) {
+			self.status.state = PlayerStatePaused;
+		} else if (PlayerStatePaused==self.status.state) {
+			self.status.state = PlayerStatePlaying;
+		}
+	}
+	return completed;
 }
 
 - (BOOL)next {
@@ -85,28 +187,12 @@
 	return completed;
 }
 
-- (Song *)loadCurentSong {
-	struct mpd_song *song = mpd_run_current_song(self.conn);
-	if (!song) {
-		// No current song playing.
-		return nil;
-	}
-	return [[Song alloc] initWithSongData:song];
-}
-
-- (Status *)loadStatus {
-	struct mpd_status *data = mpd_run_status(self.conn);
-	if (!data) {
-		NSLog(@"mpd_error: %d", mpd_connection_get_error(self.conn));
-		return nil;
-	}
-	return [[Status alloc] initWithStatusData:data];
-}
-
 - (BOOL)addURI:(NSString *)uri {
 	return mpd_run_add(self.conn, [uri UTF8String]);
 }
 
+// loadAndPlayURI:
+// Clears tracklist queue, appends new song and starts playback.
 - (BOOL)loadAndPlayURI:(NSString *)uri {
 	BOOL completed = mpd_run_clear(self.conn) && mpd_run_add(self.conn, [uri UTF8String]) && mpd_run_play(self.conn);
 	
@@ -114,6 +200,18 @@
 	completed = MPD_ERROR_SUCCESS==code;
 	if (!completed) {
 		NSLog(@"mpd_error: %d", code);
+	}
+	return completed;
+}
+
+- (BOOL)playSong:(Song *)song {
+	if (song.position >= self.queue.count) {
+		return NO;
+	}
+	BOOL completed = mpd_run_play_pos(self.conn, song.position);
+	if (completed) {
+		currentSong = song;
+		self.status.state = PlayerStatePlaying;
 	}
 	return completed;
 }
@@ -200,6 +298,10 @@
 
 - (int)queueLength {
 	return mpd_status_get_queue_length(self.status.data);
+}
+
+- (BOOL)isPlaying {
+	return PlayerStatePlaying==self.status.state;
 }
 
 @end
