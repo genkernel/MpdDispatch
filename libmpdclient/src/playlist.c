@@ -40,16 +40,6 @@
 #include <string.h>
 #include <errno.h>
 
-struct mpd_playlist {
-	char *path;
-
-	/**
-	 * The POSIX UTC time stamp of the last modification, or 0 if
-	 * that is unknown.
-	 */
-	time_t last_modified;
-};
-
 static struct mpd_playlist *
 mpd_playlist_new(const char *path)
 {

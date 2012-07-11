@@ -11,6 +11,8 @@
 		1813E80C15A415DF00D060BC /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E80A15A415DF00D060BC /* Search.m */; };
 		1813E81115A4317A00D060BC /* Library.h in Headers */ = {isa = PBXBuildFile; fileRef = 1813E80F15A4317A00D060BC /* Library.h */; };
 		1813E81215A4317A00D060BC /* Library.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E81015A4317A00D060BC /* Library.m */; };
+		1826295215AD887500827760 /* Playlist.h in Headers */ = {isa = PBXBuildFile; fileRef = 1826295015AD887500827760 /* Playlist.h */; };
+		1826295315AD887500827760 /* Playlist.m in Sources */ = {isa = PBXBuildFile; fileRef = 1826295115AD887500827760 /* Playlist.m */; };
 		1860CF5B157FC1490082F512 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 1860CF59157FC1490082F512 /* Player.h */; };
 		1860CF5C157FC1490082F512 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 1860CF5A157FC1490082F512 /* Player.m */; };
 		18828409157DF703005542AE /* async.h in Headers */ = {isa = PBXBuildFile; fileRef = 188283AE157DF703005542AE /* async.h */; };
@@ -108,8 +110,6 @@
 		1887E36D157E818B0009124F /* Directory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1887E36B157E818B0009124F /* Directory.m */; };
 		18886544157D287C00ACBDD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18886543157D287C00ACBDD0 /* Foundation.framework */; };
 		188866EB157D2C1B00ACBDD0 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 188866EA157D2C1B00ACBDD0 /* config.h */; };
-		18BADA5415811FBA000A2A7F /* Playlist.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BADA5215811FBA000A2A7F /* Playlist.h */; };
-		18BADA5515811FBA000A2A7F /* Playlist.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BADA5315811FBA000A2A7F /* Playlist.m */; };
 		18BADA5A1581216B000A2A7F /* Helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BADA581581216B000A2A7F /* Helper.h */; };
 		18BADA5B1581216B000A2A7F /* Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BADA591581216B000A2A7F /* Helper.m */; };
 		18BADA6215814557000A2A7F /* Song.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BADA6015814556000A2A7F /* Song.h */; };
@@ -127,6 +127,8 @@
 		1813E80A15A415DF00D060BC /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Search.m; sourceTree = "<group>"; };
 		1813E80F15A4317A00D060BC /* Library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Library.h; sourceTree = "<group>"; };
 		1813E81015A4317A00D060BC /* Library.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Library.m; sourceTree = "<group>"; };
+		1826295015AD887500827760 /* Playlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Playlist.h; sourceTree = "<group>"; };
+		1826295115AD887500827760 /* Playlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Playlist.m; sourceTree = "<group>"; };
 		1860CF59157FC1490082F512 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		1860CF5A157FC1490082F512 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		188283AE157DF703005542AE /* async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = async.h; sourceTree = "<group>"; };
@@ -226,8 +228,6 @@
 		18886540157D287C00ACBDD0 /* libMpdDispatch.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMpdDispatch.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		18886543157D287C00ACBDD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		188866EA157D2C1B00ACBDD0 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		18BADA5215811FBA000A2A7F /* Playlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Playlist.h; sourceTree = "<group>"; };
-		18BADA5315811FBA000A2A7F /* Playlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Playlist.m; sourceTree = "<group>"; };
 		18BADA57158120DA000A2A7F /* Helper+Internals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Helper+Internals.h"; sourceTree = "<group>"; };
 		18BADA581581216B000A2A7F /* Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helper.h; sourceTree = "<group>"; };
 		18BADA591581216B000A2A7F /* Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helper.m; sourceTree = "<group>"; };
@@ -387,8 +387,6 @@
 				1860CF59157FC1490082F512 /* Player.h */,
 				1860CF5A157FC1490082F512 /* Player.m */,
 				18BADA6415814995000A2A7F /* Player */,
-				18BADA5215811FBA000A2A7F /* Playlist.h */,
-				18BADA5315811FBA000A2A7F /* Playlist.m */,
 				1813E80915A415DF00D060BC /* Search.h */,
 				1813E80A15A415DF00D060BC /* Search.m */,
 			);
@@ -441,6 +439,8 @@
 				18BADA65158149FC000A2A7F /* Status.h */,
 				18BADA66158149FC000A2A7F /* Status.m */,
 				18022B6715A6C0EF004D6417 /* Status+Internals.h */,
+				1826295015AD887500827760 /* Playlist.h */,
+				1826295115AD887500827760 /* Playlist.m */,
 			);
 			name = Player;
 			sourceTree = "<group>";
@@ -513,13 +513,13 @@
 				1882846B157DFA4A005542AE /* MpdDispatch.h in Headers */,
 				1887E36C157E818B0009124F /* Directory.h in Headers */,
 				1860CF5B157FC1490082F512 /* Player.h in Headers */,
-				18BADA5415811FBA000A2A7F /* Playlist.h in Headers */,
 				18BADA5A1581216B000A2A7F /* Helper.h in Headers */,
 				18BADA6215814557000A2A7F /* Song.h in Headers */,
 				18BADA67158149FC000A2A7F /* Status.h in Headers */,
 				1813E80B15A415DF00D060BC /* Search.h in Headers */,
 				1813E81115A4317A00D060BC /* Library.h in Headers */,
 				18BCAFDA15A5475200C42C69 /* LibraryItems.h in Headers */,
+				1826295215AD887500827760 /* Playlist.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,13 +619,13 @@
 				1882846C157DFA4A005542AE /* MpdDispatch.m in Sources */,
 				1887E36D157E818B0009124F /* Directory.m in Sources */,
 				1860CF5C157FC1490082F512 /* Player.m in Sources */,
-				18BADA5515811FBA000A2A7F /* Playlist.m in Sources */,
 				18BADA5B1581216B000A2A7F /* Helper.m in Sources */,
 				18BADA6315814557000A2A7F /* Song.m in Sources */,
 				18BADA68158149FC000A2A7F /* Status.m in Sources */,
 				1813E80C15A415DF00D060BC /* Search.m in Sources */,
 				1813E81215A4317A00D060BC /* Library.m in Sources */,
 				18BCAFDB15A5475200C42C69 /* LibraryItems.m in Sources */,
+				1826295315AD887500827760 /* Playlist.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

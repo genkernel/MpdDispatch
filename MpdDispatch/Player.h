@@ -9,6 +9,7 @@
 #import "Helper.h"
 #import "Song.h"
 #import "Status.h"
+#import "Playlist.h"
 
 @interface Player : Helper
 - (BOOL)stop;
@@ -21,8 +22,15 @@
 - (BOOL)loadAndPlayURI:(NSString *)uri;
 - (BOOL)playSong:(Song *)song;
 - (void)update;
+- (BOOL)clearQueue;
 
-@property (strong, nonatomic, readonly) NSArray *queue;
+// Playlists-related methods.
+- (BOOL)savePlaylistWithName:(NSString *)name;
+- (BOOL)loadPlaylist:(Playlist *)playlist;
+//- (BOOL)clearPlaylistWithName:(NSString *)name;
+- (NSArray *)loadPlaylistsLists;
+
+@property (strong, nonatomic, readonly) NSArray *queue, *playlists;
 @property (strong, nonatomic, readonly) Status *status;
 @property (strong, nonatomic, readonly) Song *currentSong;
 @property (assign, nonatomic) BOOL repeat, random;

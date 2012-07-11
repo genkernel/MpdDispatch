@@ -21,7 +21,7 @@
 @implementation Player {
 	NSUInteger lastUpdateQueueVersion;
 }
-@synthesize queue, status, currentSong, autoplay;
+@synthesize queue, playlists, status, currentSong, autoplay;
 @dynamic volume, repeat, seek;
 @dynamic queueVersion, queueLength;
 @dynamic playing;
@@ -204,6 +204,16 @@
 	return completed;
 }
 
+- (BOOL)clearQueue {
+	BOOL completed = mpd_run_clear(self.conn);
+	if (completed) {
+		queue = nil;
+		currentSong = nil;
+		self.status.state = PlayerStateStopped;
+	}
+	return completed;
+}
+
 - (BOOL)playSong:(Song *)song {
 	if (song.position >= self.queue.count) {
 		return NO;
@@ -214,6 +224,53 @@
 		self.status.state = PlayerStatePlaying;
 	}
 	return completed;
+}
+
+#pragma mark Playlists
+
+// save:
+// Saves current queue to playlist.
+- (BOOL)savePlaylistWithName:(NSString *)name {
+	BOOL completed = mpd_run_save(self.conn, name.UTF8String);
+	return completed;
+}
+
+- (BOOL)loadPlaylist:(Playlist *)playlist {
+	NSString *name = playlist.pathName;
+	BOOL completed = mpd_run_load(self.conn, name.UTF8String);
+	return completed;
+}
+
+/*- (BOOL)clearPlaylistWithName:(NSString *)name {
+	BOOL completed = mpd_run_playlist_clear(self.conn, name.UTF8String);
+	return completed;
+}*/
+
+- (NSArray *)loadPlaylistsLists {
+	BOOL completed = mpd_send_list_playlists(self.conn);
+	if (!completed) {
+		NSLog(@"mpd_error: %d", mpd_connection_get_error(self.conn));
+		return nil;
+	}
+	
+	NSMutableArray *items = [NSMutableArray array];
+	
+	struct mpd_playlist *playlist = NULL;
+	while ((playlist = mpd_recv_playlist(self.conn))) {
+		Playlist *newPlaylist = [[Playlist alloc] initWithPlaylistData:playlist];
+		[items addObject:newPlaylist];
+		
+		// TODO
+		//mpd_send_list_playlist_meta
+	}
+	mpd_response_finish(self.conn);
+	
+	BOOL connected = MPD_ERROR_SUCCESS==mpd_connection_get_error(self.conn);
+	if (!connected) {
+		return nil;
+	}
+	playlists = [NSArray arrayWithArray:items];
+	return playlists;
 }
 
 #pragma mark Properties

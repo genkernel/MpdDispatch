@@ -56,7 +56,15 @@ struct mpd_connection;
  * playlist directory.  Use the functions provided by this header to
  * access the object's attributes.
  */
-struct mpd_playlist;
+struct mpd_playlist {
+	char *path;
+	
+	/**
+	 * The POSIX UTC time stamp of the last modification, or 0 if
+	 * that is unknown.
+	 */
+	time_t last_modified;
+};
 
 #ifdef __cplusplus
 extern "C" {

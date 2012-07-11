@@ -23,8 +23,8 @@ typedef enum {
 typedef bool (*ActionMethod)(struct mpd_connection *);
 
 @interface MpdDispatch()
+
 @property (strong, nonatomic) NSArray *helpers;
-@property (strong, nonatomic, readwrite) Playlist *playlist;
 @property (strong, nonatomic, readwrite) Player *player;
 @property (strong, nonatomic, readwrite) Directory *directory;
 @property (strong, nonatomic, readwrite) Search *search;
@@ -40,7 +40,8 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 	dispatch_once_t cachedRequests[MpdSupportedActionsCount];
 	NSArray *containers[MpdSupportedActionsCount];
 }
-@synthesize helpers, playlist, player, directory, search;
+@synthesize didConnect, didAuthenticate;
+@synthesize helpers, player, directory, search;
 @dynamic lastErrorCode, lastOperationHasFailed;
 
 - (id)init {
@@ -59,10 +60,9 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 		actions[MpdSupportedTagTypes] = &mpd_send_list_tag_types;
 		
 		self.player = [Player new];
-		self.playlist = [Playlist new];
 		self.directory = [Directory new];
 		self.search = [Search new];
-		self.helpers = [NSArray arrayWithObjects:self.playlist, self.player, self.directory, self.search, nil];
+		self.helpers = [NSArray arrayWithObjects:self.player, self.directory, self.search, nil];
 	}
 	return self;
 }
@@ -92,6 +92,9 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 			helper.conn = conn;
 			[helper didConnect];
 		}
+		if (self.didConnect) {
+			self.didConnect();
+		}
 	}
 	return connected;
 }
@@ -102,6 +105,9 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 		for (Helper *helper in self.helpers) {
 			helper.conn = conn;
 			[helper didAuthenticate];
+		}
+		if (self.didAuthenticate) {
+			self.didAuthenticate();
 		}
 	}
 	return completed;

@@ -23,7 +23,9 @@
 }
 
 - (void)dealloc {
-	mpd_status_free(data);
+	if (data) {
+		mpd_status_free(data);
+	}
 }
 
 @end

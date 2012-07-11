@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "Directory.h"
 #import "Player.h"
-#import "Playlist.h"
 #import "Search.h"
 
 @interface MpdDispatch : NSObject
-@property (strong, nonatomic, readonly) Playlist *playlist;
+@property (copy, nonatomic) void(^didConnect)();
+@property (copy, nonatomic) void (^didAuthenticate)();
+
 @property (strong, nonatomic, readonly) Player *player;
 @property (strong, nonatomic, readonly) Directory *directory;
 @property (strong, nonatomic, readonly) Search *search;

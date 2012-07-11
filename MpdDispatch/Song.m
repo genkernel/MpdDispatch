@@ -49,7 +49,9 @@
 }
 
 - (void)dealloc {
-	mpd_song_free(data);
+	if (data) {
+		mpd_song_free(data);
+	}
 	
 	for (int tag=0; tag<MPD_TAG_COUNT; tag++) {
 		tags[tag] = nil;
