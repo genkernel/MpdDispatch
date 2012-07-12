@@ -23,13 +23,13 @@ typedef enum {
 typedef bool (*ActionMethod)(struct mpd_connection *);
 
 @interface MpdDispatch()
-
 @property (strong, nonatomic) NSArray *helpers;
 @property (strong, nonatomic, readwrite) Player *player;
 @property (strong, nonatomic, readwrite) Directory *directory;
 @property (strong, nonatomic, readwrite) Search *search;
 
 - (NSArray *)performEnumaration:(ActionMethod)action withKey:(const char *)key cachingRequest:(dispatch_once_t *)request container:(NSArray **)container;
+- (void)freeConnection;
 @end
 
 @implementation MpdDispatch {
@@ -69,10 +69,6 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 
 - (void)dealloc {
 	[self disconnect];
-	
-	for (int i=0; i<MpdSupportedActionsCount; i++) {
-		containers[i] = nil;
-	}
 }
 
 - (BOOL)connect:(NSNetService *)service {
@@ -88,6 +84,8 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 	 
 	BOOL connected = MPD_ERROR_SUCCESS==mpd_connection_get_error(conn);
 	if (connected) {
+		NSLog(@"Connected!");
+		
 		for (Helper *helper in self.helpers) {
 			helper.conn = conn;
 			[helper didConnect];
@@ -114,9 +112,23 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 }
 
 - (void)disconnect {
+	[self freeConnection];
+}
+
+- (void)freeConnection {
 	if (conn) {
 		mpd_connection_free(conn);
 		conn = NULL;
+		
+		for (Helper *helper in self.helpers) {
+			helper.conn = NULL;
+			[helper didDisconnect];
+		}
+		self.helpers = nil;
+		
+		for (int i=0; i<MpdSupportedActionsCount; i++) {
+			containers[i] = nil;
+		}
 	}
 }
 
@@ -124,7 +136,11 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 	if (!conn) {
 		return MPD_ERROR_TIMEOUT;
 	}
-	return mpd_connection_get_error(conn);
+	enum mpd_error code = mpd_connection_get_error(conn);
+	if (MPD_ERROR_CLOSED==code || MPD_ERROR_TIMEOUT==code) {
+		[self freeConnection];
+	}
+	return code;
 }
 
 - (NSUInteger)lastOperationHasFailed {
@@ -132,7 +148,8 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 }
 
 - (BOOL)isDisconnected {
-	return MPD_ERROR_TIMEOUT==self.lastErrorCode || MPD_ERROR_CLOSED==self.lastErrorCode;
+	NSUInteger code = self.lastErrorCode;
+	return MPD_ERROR_TIMEOUT==code || MPD_ERROR_CLOSED==code;
 }
 
 - (NSString *)version {

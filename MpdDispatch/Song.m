@@ -14,7 +14,7 @@
 }
 @synthesize data;
 @synthesize uri, title, duration;
-@dynamic durationSecs, position;
+@dynamic durationSecs, position, uid;
 
 - (id)initWithSongData:(struct mpd_song *)origin {
 	self = [self init];
@@ -58,6 +58,10 @@
 	}
 }
 
+- (NSString *)description {
+	return [NSString stringWithFormat:@"[%@ 0x%x] (%d) %@", NSStringFromClass([self class]), (int)self, self.position, self.title];
+}
+
 - (NSString *)tagValueOfType:(SongTags)tag {
 	return tags[tag];
 }
@@ -85,6 +89,10 @@
 
 - (NSUInteger)position {
 	return mpd_song_get_pos(data);
+}
+
+- (NSUInteger)uid {
+	return mpd_song_get_id(data);
 }
 
 @end

@@ -22,5 +22,5 @@ typedef enum {
 + (NSString *)durationWithSeconds:(NSUInteger)value;
 
 @property (strong, nonatomic, readonly) NSString *uri, *title, *duration;
-@property (assign, nonatomic, readonly) NSUInteger durationSecs, position;
+@property (assign, nonatomic, readonly) NSUInteger durationSecs, position, uid;
 @end

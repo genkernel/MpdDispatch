@@ -23,6 +23,8 @@
 - (BOOL)playSong:(Song *)song;
 - (void)update;
 - (BOOL)clearQueue;
+- (BOOL)removeFromQueue:(Song *)song;
+- (BOOL)moveSong:(Song *)song toPosition:(NSUInteger)pos;
 
 // Playlists-related methods.
 - (BOOL)savePlaylistWithName:(NSString *)name;

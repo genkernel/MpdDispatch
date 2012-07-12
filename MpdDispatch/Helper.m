@@ -20,4 +20,8 @@
 	// Dummy.
 }
 
+- (void)didDisconnect {
+	self.conn = NULL;
+}
+
 @end

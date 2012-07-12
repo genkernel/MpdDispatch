@@ -13,6 +13,7 @@
 @property (assign, nonatomic) struct mpd_connection *conn;
 - (void)didConnect;
 - (void)didAuthenticate;
+- (void)didDisconnect;
 @end
 
 #endif

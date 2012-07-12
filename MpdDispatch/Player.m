@@ -117,6 +117,11 @@
 	currentSong = [self loadCurentSong];
 	status = [self loadStatus];
 	
+	//assert(nil!=status);
+	if (!status) {
+		return;
+	}
+	
 	if (self.queueVersion != lastUpdateQueueVersion) {
 		queue = [self loadQueue];
 		if (!queue) {
@@ -210,6 +215,61 @@
 		queue = nil;
 		currentSong = nil;
 		self.status.state = PlayerStateStopped;
+	}
+	return completed;
+}
+
+- (BOOL)removeFromQueue:(Song *)song {
+	BOOL completed = mpd_run_delete_id(self.conn, song.uid);
+	if (completed) {
+		NSMutableArray *items = [NSMutableArray arrayWithArray:self.queue];
+		[items removeObjectAtIndex:song.position];
+		// Update subsequent songs positions.
+		for (int i=song.position; i<items.count; i++) {
+			Song *nextSong = items[i];
+			//nextSong.data->pos = i;
+			nextSong.data->pos--;
+		}
+		queue = [NSArray arrayWithArray:items];
+	}
+	return completed;
+}
+
+- (BOOL)moveSong:(Song *)song toPosition:(NSUInteger)pos {
+	if (pos == song.position) {
+		NSLog(@"Song is already at the position.");
+		return NO;
+	}
+	if (pos >= self.queue.count) {
+		NSLog(@"Invalid move position specified.");
+		return NO;
+	}
+	
+	BOOL completed = mpd_run_move_id(self.conn, song.uid, pos);
+	if (completed) {
+		// Update songs positions.
+		BOOL added = NO;
+		NSMutableArray *items = [NSMutableArray arrayWithCapacity:self.queue.count];
+		for (int i=0, p=0; i<self.queue.count;) {
+			Song *otherSong = self.queue[i];
+			
+			if (otherSong!=song) {
+				if (p==pos) {
+					song.data->pos = p++;
+					[items addObject:song];
+					added = YES;
+					continue;
+				}
+				otherSong.data->pos = p++;
+				[items addObject:otherSong];
+			}
+			i++;
+		}
+		if (!added) {
+			song.data->pos = pos;
+			[items addObject:song];
+		}
+		queue = [NSArray arrayWithArray:items];
 	}
 	return completed;
 }
