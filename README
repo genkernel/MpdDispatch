@@ -1,0 +1,5 @@
+Dev era.
+
+Obj-C library to control MPD server remotely, built on top of libmpdclient(http://mpd.wikia.com/wiki/ClientLib:libmpdclient) .
+
+MPD stands for Music Player Daemon and lives here: http://mpd.wikia.com/.
