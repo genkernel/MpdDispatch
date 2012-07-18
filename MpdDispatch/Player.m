@@ -278,7 +278,7 @@
 	if (song.position >= self.queue.count) {
 		return NO;
 	}
-	BOOL completed = mpd_run_play_pos(self.conn, song.position);
+	BOOL completed = mpd_run_play_id(self.conn, song.uid);
 	if (completed) {
 		currentSong = song;
 		self.status.state = PlayerStatePlaying;
@@ -288,7 +288,6 @@
 
 #pragma mark Playlists
 
-// save:
 // Saves current queue to playlist.
 - (BOOL)savePlaylistWithName:(NSString *)name {
 	BOOL completed = mpd_run_save(self.conn, name.UTF8String);
@@ -339,7 +338,7 @@
 	return mpd_status_get_repeat(self.status.data);
 }
 
-- (void)setRepeat:(BOOL)mode {
+- (void)setShouldRepeat:(BOOL)mode {
 	if (mode == self.repeat) {
 		return;
 	}
@@ -355,7 +354,7 @@
 	return mpd_status_get_random(self.status.data);
 }
 
-- (void)setRandom:(BOOL)mode {
+- (void)setShouldPlayRandom:(BOOL)mode {
 	if (mode == self.random) {
 		return;
 	}
@@ -371,23 +370,24 @@
 	return mpd_status_get_volume(self.status.data);
 }
 
-- (void)setVolume:(NSUInteger)value {
+- (BOOL)setVolume:(NSUInteger)value {
 	if (value == self.volume) {
-		return;
+		return YES;
 	}
 	BOOL completed = mpd_run_set_volume(self.conn, value);
 	if (!completed) {
-		NSLog(@"ERR. mpd_run_set_volume");
-		return;
+		NSLog(@"ERR. mpd_run_set_volume. mpd_error: %d.", mpd_connection_get_error(self.conn));
+		return NO;
 	}
 	self.status.data->volume = value;
+	return completed;
 }
 
 - (NSUInteger)seek {
 	return mpd_status_get_elapsed_time(self.status.data);
 }
 
-- (void)setSeek:(NSUInteger)duration {
+- (void)seekTo:(NSUInteger)duration {
 	if (!self.currentSong) {
 		NSLog(@"WARN. No active currentSong.");
 		return;

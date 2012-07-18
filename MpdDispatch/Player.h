@@ -25,6 +25,10 @@
 - (BOOL)clearQueue;
 - (BOOL)removeFromQueue:(Song *)song;
 - (BOOL)moveSong:(Song *)song toPosition:(NSUInteger)pos;
+- (BOOL)setVolume:(NSUInteger)volume;
+- (void)setShouldRepeat:(BOOL)mode;
+- (void)setShouldPlayRandom:(BOOL)mode;
+- (void)seekTo:(NSUInteger)duration;
 
 // Playlists-related methods.
 - (BOOL)savePlaylistWithName:(NSString *)name;
@@ -35,10 +39,10 @@
 @property (strong, nonatomic, readonly) NSArray *queue, *playlists;
 @property (strong, nonatomic, readonly) Status *status;
 @property (strong, nonatomic, readonly) Song *currentSong;
-@property (assign, nonatomic) BOOL repeat, random;
-@property (assign, nonatomic) NSUInteger volume;
+@property (assign, nonatomic, readonly) BOOL repeat, random;
+@property (assign, nonatomic, readonly) NSUInteger volume;
 // seek. Duration progress for currentSong.
-@property (assign, nonatomic) NSUInteger seek;
+@property (assign, nonatomic, readonly) NSUInteger seek;
 @property (assign, nonatomic) BOOL autoplay;
 @property (assign, nonatomic, readonly, getter=isPlaying) BOOL playing;
 @end

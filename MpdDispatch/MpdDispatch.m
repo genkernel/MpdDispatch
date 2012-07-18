@@ -10,7 +10,7 @@
 #import <netinet/in.h>
 #import "Helper+Internals.h"
 
-static unsigned connection_timeout = 10 * 60 * 1000;
+static unsigned connection_timeout = 5 * 1000;
 
 typedef enum {
 	MpdSupportedAllowedCommands,
