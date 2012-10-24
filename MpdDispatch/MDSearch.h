@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Helper.h"
+#import "MDHelper.h"
 
-@interface Search : Helper
+@interface MDSearch : MDHelper
 @property (strong, nonatomic, readonly) NSArray *artists;
 - (BOOL)loadArtists;
 @end

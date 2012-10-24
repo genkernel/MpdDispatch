@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Helper : NSObject
+@interface MDHelper : NSObject
 
 @end

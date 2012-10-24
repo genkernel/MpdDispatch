@@ -9,7 +9,7 @@
 #ifndef MpdDispatch_Status_Internals_h
 #define MpdDispatch_Status_Internals_h
 
-@interface Status()
+@interface MDStatus()
 @property (assign, nonatomic, readonly) struct mpd_status *data;
 @property (assign, nonatomic, readwrite)PlayerState state;
 @end

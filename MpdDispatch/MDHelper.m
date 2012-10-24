@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Helper.h"
-#import "Helper+Internals.h"
+#import "MDHelper.h"
+#import "MDHelper+Internals.h"
 
-@implementation Helper
+@implementation MDHelper
 @synthesize conn;
 
 - (void)didConnect {

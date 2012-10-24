@@ -6,14 +6,14 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "LibraryItems.h"
-#import "LibraryItems+Internals.h"
+#import "MDLibraryItems.h"
+#import "MDLibraryItems+Internals.h"
 
-@interface LibraryItems()
+@interface MDLibraryItems()
 @property (strong, nonatomic) NSMutableDictionary *items, *sectionTitles, *indeces;
 @end
 
-@implementation LibraryItems {
+@implementation MDLibraryItems {
 	SongTags tag;
 }
 @synthesize sections, sectionIndexTitles;
@@ -29,7 +29,7 @@
 
 - (void)loadItems:(NSArray *)songs {
 	NSMutableDictionary *d = [NSMutableDictionary dictionary];
-	for (Song *song in songs) {
+	for (MDSong *song in songs) {
 		NSString *val = [song tagValueOfType:tag];
 		if (!val) {
 			continue;
@@ -45,7 +45,6 @@
 	}
 	self.items = [NSDictionary dictionaryWithDictionary:d];
 	// TODO: Sort items.
-	//[self.items.allValues makeObjectsPerformSelector:@selector(sortedArrayUsingSelector:) withObject:@selector(caseInsensitiveCompare:)];
 	
 	// Sort sections.
 	NSArray *allSections = self.items.allKeys;
@@ -81,10 +80,15 @@
 	}
 }
 
-- (Song *)itemForSection:(NSUInteger)section atRow:(NSUInteger)row {
+- (MDSong *)itemForSection:(NSUInteger)section atRow:(NSUInteger)row {
 	NSArray *sectionItems = [self itemsForSection:section];
-	Song *song = sectionItems[row];
+	MDSong *song = sectionItems[row];
 	return song;
+}
+
+- (NSArray *)sectionItemsForSection:(NSUInteger)section {
+	NSString *key = self.sectionIndexTitles[section];
+	return self.sectionTitles[key];
 }
 
 - (NSArray *)itemsForSection:(NSUInteger)section {

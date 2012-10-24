@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Search.h"
-#import "Helper+Internals.h"
+#import "MDSearch.h"
+#import "MDHelper+Internals.h"
 
-@interface Search()
+@interface MDSearch()
 @property (strong, nonatomic, readwrite) NSArray *artists;
 
 - (BOOL)prepareStats;
 @end
 
-@implementation Search {
+@implementation MDSearch {
 	struct mpd_stats *stats;
 }
 @synthesize artists;

@@ -6,24 +6,24 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Directory.h"
-#import "Helper+Internals.h"
+#import "MDDirectory.h"
+#import "MDHelper+Internals.h"
 
 static NSString *rootDirectoryPath = @"";
 
-@interface Directory() {
+@interface MDDirectory() {
 	BOOL isLoaded;
 }
 @property (strong, nonatomic, readwrite) NSMutableDictionary *directories;
 @property (strong, nonatomic, readwrite) NSMutableDictionary *songs;
 @property (strong, nonatomic, readwrite) NSMutableDictionary *playlists;
 
-@property (strong, nonatomic) Library *rootLibrary;
+@property (strong, nonatomic) MDLibrary *rootLibrary;
 
 - (BOOL)parseDirectory:(NSString *)path;
 @end
 
-@implementation Directory
+@implementation MDDirectory
 @synthesize directories, songs, playlists, rootLibrary;
 
 - (BOOL)rescan {
@@ -84,7 +84,7 @@ static NSString *rootDirectoryPath = @"";
 			case MPD_ENTITY_TYPE_SONG: {
 				const struct mpd_song *pureSong = mpd_entity_get_song(entity);
 				const struct mpd_song *song = mpd_song_dup(pureSong);
-				Song *newSong = [[Song alloc] initWithSongData:(struct mpd_song *)song];
+				MDSong *newSong = [[MDSong alloc] initWithSongData:(struct mpd_song *)song];
 				[foundSongs addObject:newSong];
 			}
 				break;
@@ -135,16 +135,16 @@ static NSString *rootDirectoryPath = @"";
 	return connected;
 }
 
-- (Library *)loadRootLibrary {
+- (MDLibrary *)loadRootLibrary {
 	if (rootLibrary) {
 		return rootLibrary;
 	}
-	rootLibrary = [[Library alloc] initWithDirectory:self rootPath:rootDirectoryPath];
+	rootLibrary = [[MDLibrary alloc] initWithDirectory:self rootPath:rootDirectoryPath];
 	return rootLibrary;
 }
 
-- (Library *)loadLibraryForDirectoryPath:(NSString *)path {
-	return [[Library alloc] initWithDirectory:self rootPath:path];
+- (MDLibrary *)loadLibraryForDirectoryPath:(NSString *)path {
+	return [[MDLibrary alloc] initWithDirectory:self rootPath:path];
 }
 
 @end

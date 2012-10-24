@@ -15,7 +15,7 @@ typedef enum {
 	PlayerStatePaused
 } PlayerState;
 
-@interface Status : NSObject
+@interface MDStatus : NSObject
 - (id)initWithStatusData:(struct mpd_status *)status;
 @property (assign, nonatomic, readonly)PlayerState state;
 @end

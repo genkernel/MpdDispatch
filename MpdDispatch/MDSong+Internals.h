@@ -9,7 +9,7 @@
 #ifndef MpdDispatch_Song_Internals_h
 #define MpdDispatch_Song_Internals_h
 
-@interface Song()
+@interface MDSong()
 @property (assign, nonatomic, readonly) struct mpd_song *data;
 @end
 

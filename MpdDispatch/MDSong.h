@@ -16,7 +16,7 @@ typedef enum {
 	SongTagsCount
 } SongTags;
 
-@interface Song : NSObject
+@interface MDSong : NSObject
 - (id)initWithSongData:(struct mpd_song *)song;
 - (NSString *)tagValueOfType:(SongTags)type;
 + (NSString *)durationWithSeconds:(NSUInteger)value;

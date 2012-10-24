@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "MpdDispatch.h"
+#import "MDMpdDispatch.h"
 #import <netinet/in.h>
-#import "Helper+Internals.h"
+#import "MDHelper+Internals.h"
 
 static unsigned connection_timeout = 5 * 1000;
 
@@ -22,17 +22,17 @@ typedef enum {
 } MpdSupportedActions;
 typedef bool (*ActionMethod)(struct mpd_connection *);
 
-@interface MpdDispatch()
+@interface MDMpdDispatch()
 @property (strong, nonatomic) NSArray *helpers;
-@property (strong, nonatomic, readwrite) Player *player;
-@property (strong, nonatomic, readwrite) Directory *directory;
-@property (strong, nonatomic, readwrite) Search *search;
+@property (strong, nonatomic, readwrite) MDPlayer *player;
+@property (strong, nonatomic, readwrite) MDDirectory *directory;
+@property (strong, nonatomic, readwrite) MDSearch *search;
 
 - (NSArray *)performEnumaration:(ActionMethod)action withKey:(const char *)key cachingRequest:(dispatch_once_t *)request container:(NSArray **)container;
 - (void)freeConnection;
 @end
 
-@implementation MpdDispatch {
+@implementation MDMpdDispatch {
 	struct mpd_connection *conn;
 	
 	const char *actionKeys[MpdSupportedActionsCount];
@@ -59,9 +59,9 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 		actionKeys[MpdSupportedAllowedCommands] = "tagtype";
 		actions[MpdSupportedTagTypes] = &mpd_send_list_tag_types;
 		
-		self.player = [Player new];
-		self.directory = [Directory new];
-		self.search = [Search new];
+		self.player = [MDPlayer new];
+		self.directory = [MDDirectory new];
+		self.search = [MDSearch new];
 		self.helpers = [NSArray arrayWithObjects:self.player, self.directory, self.search, nil];
 	}
 	return self;
@@ -86,7 +86,7 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 	if (connected) {
 		NSLog(@"Connected!");
 		
-		for (Helper *helper in self.helpers) {
+		for (MDHelper *helper in self.helpers) {
 			helper.conn = conn;
 			[helper didConnect];
 		}
@@ -100,7 +100,7 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 - (BOOL)authenticate:(NSString *)password {
 	BOOL completed = mpd_run_password(conn, [password UTF8String]);
 	if (completed) {
-		for (Helper *helper in self.helpers) {
+		for (MDHelper *helper in self.helpers) {
 			helper.conn = conn;
 			[helper didAuthenticate];
 		}
@@ -120,7 +120,7 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 		mpd_connection_free(conn);
 		conn = NULL;
 		
-		for (Helper *helper in self.helpers) {
+		for (MDHelper *helper in self.helpers) {
 			helper.conn = NULL;
 			[helper didDisconnect];
 		}
@@ -148,8 +148,9 @@ typedef bool (*ActionMethod)(struct mpd_connection *);
 }
 
 - (BOOL)isDisconnected {
+	BOOL isStatusOk = nil!=player.status;
 	NSUInteger code = self.lastErrorCode;
-	return MPD_ERROR_TIMEOUT==code || MPD_ERROR_CLOSED==code;
+	return MPD_ERROR_TIMEOUT==code || MPD_ERROR_CLOSED==code || !isStatusOk;
 }
 
 - (NSString *)version {

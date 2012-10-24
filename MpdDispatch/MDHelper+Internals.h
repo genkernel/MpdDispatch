@@ -9,7 +9,7 @@
 #ifndef MpdDispatch_Playlist_Internals_h
 #define MpdDispatch_Playlist_Internals_h
 
-@interface Helper()
+@interface MDHelper()
 @property (assign, nonatomic) struct mpd_connection *conn;
 - (void)didConnect;
 - (void)didAuthenticate;

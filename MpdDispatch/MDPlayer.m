@@ -6,23 +6,23 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Player.h"
-#import "Helper+Internals.h"
-#import "Status+Internals.h"
-#import "Song+Internals.h"
+#import "MDPlayer.h"
+#import "MDHelper+Internals.h"
+#import "MDStatus+Internals.h"
+#import "MDSong+Internals.h"
 
-@interface Player()
-- (Status *)loadStatus;
-- (Song *)loadCurentSong;
+@interface MDPlayer()
+- (MDStatus *)loadStatus;
+- (MDSong *)loadCurentSong;
 - (NSArray *)loadQueue;
 @property (assign, nonatomic, readonly) int queueVersion, queueLength;
 @end
 
-@implementation Player {
+@implementation MDPlayer {
 	NSUInteger lastUpdateQueueVersion;
 }
 @synthesize queue, playlists, status, currentSong, autoplay;
-@dynamic volume, repeat, seek;
+@dynamic volume, repeat, seek, kBitRate;
 @dynamic queueVersion, queueLength;
 @dynamic playing;
 
@@ -55,7 +55,7 @@
 				NSLog(@"ERR. Failed to retrieve enqueued song.");
 				continue;
 			}
-			Song *newSong = [[Song alloc] initWithSongData:song];
+			MDSong *newSong = [[MDSong alloc] initWithSongData:song];
 			[items addObject:newSong];
 		}
 		queue = [NSArray arrayWithArray:items];
@@ -74,7 +74,7 @@
 		
 		struct mpd_song *song = NULL;
 		while (NULL != (song = mpd_recv_song(self.conn))) {
-			Song *updatedSong = [[Song alloc] initWithSongData:song];
+			MDSong *updatedSong = [[MDSong alloc] initWithSongData:song];
 			if (updatedSong.position < items.count) {
 				[items replaceObjectAtIndex:updatedSong.position withObject:updatedSong];
 			} else {
@@ -91,22 +91,22 @@
 	return items;
 }
 
-- (Song *)loadCurentSong {
+- (MDSong *)loadCurentSong {
 	struct mpd_song *song = mpd_run_current_song(self.conn);
 	if (!song) {
 		// No current song playing.
 		return nil;
 	}
-	return [[Song alloc] initWithSongData:song];
+	return [[MDSong alloc] initWithSongData:song];
 }
 
-- (Status *)loadStatus {
+- (MDStatus *)loadStatus {
 	struct mpd_status *data = mpd_run_status(self.conn);
 	if (!data) {
 		NSLog(@"mpd_error: %d", mpd_connection_get_error(self.conn));
 		return nil;
 	}
-	return [[Status alloc] initWithStatusData:data];
+	return [[MDStatus alloc] initWithStatusData:data];
 }
 
 #pragma mark Instance methods
@@ -193,11 +193,19 @@
 }
 
 - (BOOL)addURI:(NSString *)uri {
-	return mpd_run_add(self.conn, [uri UTF8String]);
+	return mpd_run_add(self.conn, uri.UTF8String);
+}
+
+- (BOOL)addURI:(NSString *)uri toPosition:(NSUInteger)pos {
+	return mpd_run_add_id_to(self.conn, uri.UTF8String, pos);
+}
+
+- (BOOL)removeSong:(MDSong *)song {
+	return mpd_run_delete_id(self.conn, song.uid);
 }
 
 // loadAndPlayURI:
-// Clears tracklist queue, appends new song and starts playback.
+// Clears current queue, appends new song and starts playback.
 - (BOOL)loadAndPlayURI:(NSString *)uri {
 	BOOL completed = mpd_run_clear(self.conn) && mpd_run_add(self.conn, [uri UTF8String]) && mpd_run_play(self.conn);
 	
@@ -219,14 +227,14 @@
 	return completed;
 }
 
-- (BOOL)removeFromQueue:(Song *)song {
+- (BOOL)removeFromQueue:(MDSong *)song {
 	BOOL completed = mpd_run_delete_id(self.conn, song.uid);
 	if (completed) {
 		NSMutableArray *items = [NSMutableArray arrayWithArray:self.queue];
 		[items removeObjectAtIndex:song.position];
 		// Update subsequent songs positions.
 		for (int i=song.position; i<items.count; i++) {
-			Song *nextSong = items[i];
+			MDSong *nextSong = items[i];
 			//nextSong.data->pos = i;
 			nextSong.data->pos--;
 		}
@@ -235,7 +243,7 @@
 	return completed;
 }
 
-- (BOOL)moveSong:(Song *)song toPosition:(NSUInteger)pos {
+- (BOOL)moveSong:(MDSong *)song toPosition:(NSUInteger)pos {
 	if (pos == song.position) {
 		NSLog(@"Song is already at the position.");
 		return NO;
@@ -251,7 +259,7 @@
 		BOOL added = NO;
 		NSMutableArray *items = [NSMutableArray arrayWithCapacity:self.queue.count];
 		for (int i=0, p=0; i<self.queue.count;) {
-			Song *otherSong = self.queue[i];
+			MDSong *otherSong = self.queue[i];
 			
 			if (otherSong!=song) {
 				if (p==pos) {
@@ -274,7 +282,7 @@
 	return completed;
 }
 
-- (BOOL)playSong:(Song *)song {
+- (BOOL)playSong:(MDSong *)song {
 	if (song.position >= self.queue.count) {
 		return NO;
 	}
@@ -294,7 +302,7 @@
 	return completed;
 }
 
-- (BOOL)loadPlaylist:(Playlist *)playlist {
+- (BOOL)loadPlaylist:(MDPlaylist *)playlist {
 	NSString *name = playlist.pathName;
 	BOOL completed = mpd_run_load(self.conn, name.UTF8String);
 	return completed;
@@ -316,7 +324,7 @@
 	
 	struct mpd_playlist *playlist = NULL;
 	while ((playlist = mpd_recv_playlist(self.conn))) {
-		Playlist *newPlaylist = [[Playlist alloc] initWithPlaylistData:playlist];
+		MDPlaylist *newPlaylist = [[MDPlaylist alloc] initWithPlaylistData:playlist];
 		[items addObject:newPlaylist];
 		
 		// TODO
@@ -381,6 +389,10 @@
 	}
 	self.status.data->volume = value;
 	return completed;
+}
+
+- (NSUInteger)kBitRate {
+	return mpd_status_get_kbit_rate(self.status.data);
 }
 
 - (NSUInteger)seek {

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Playlist : NSObject
+@interface MDPlaylist : NSObject
 - (id)initWithPlaylistData:(struct mpd_playlist *)playlist;
 @property (strong, nonatomic, readonly) NSString *pathName;
 @property (strong, nonatomic, readonly) NSDate *lastModified;

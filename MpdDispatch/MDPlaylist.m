@@ -6,14 +6,14 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Playlist.h"
+#import "MDPlaylist.h"
 
-@interface Playlist()
+@interface MDPlaylist()
 @property (strong, nonatomic, readwrite) NSString *pathName;
 @property (strong, nonatomic, readwrite) NSDate *lastModified;
 @end
 
-@implementation Playlist {
+@implementation MDPlaylist {
 	struct mpd_playlist *data;
 }
 @synthesize pathName, lastModified;

@@ -7,17 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Directory.h"
-#import "Player.h"
-#import "Search.h"
+#import "MDDirectory.h"
+#import "MDPlayer.h"
+#import "MDSearch.h"
 
-@interface MpdDispatch : NSObject
+@interface MDMpdDispatch : NSObject
 @property (copy, nonatomic) void(^didConnect)();
 @property (copy, nonatomic) void (^didAuthenticate)();
 
-@property (strong, nonatomic, readonly) Player *player;
-@property (strong, nonatomic, readonly) Directory *directory;
-@property (strong, nonatomic, readonly) Search *search;
+@property (strong, nonatomic, readonly) MDPlayer *player;
+@property (strong, nonatomic, readonly) MDDirectory *directory;
+@property (strong, nonatomic, readonly) MDSearch *search;
 
 - (BOOL)connect:(NSNetService *)service;
 - (BOOL)connect:(NSString *)hostName port:(NSInteger)port;

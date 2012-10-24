@@ -9,7 +9,7 @@
 #ifndef MpdDispatch_LibraryItems_Internals_h
 #define MpdDispatch_LibraryItems_Internals_h
 
-@interface LibraryItems(Internals)
+@interface MDLibraryItems(Internals)
 - (void)loadItems:(NSArray *)songs;
 @end
 

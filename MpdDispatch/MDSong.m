@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Song.h"
-#import "Song+Internals.h"
+#import "MDSong.h"
+#import "MDSong+Internals.h"
 
-@implementation Song {
+@implementation MDSong {
 	NSString *tags[MPD_TAG_COUNT];
 }
 @synthesize data;
@@ -39,7 +39,7 @@
 		// Parse title.
 		title = [self tagValueOfType:MPD_TAG_TITLE];
 		if (!title) {
-			title = [self.uri lastPathComponent];
+			title = [[self.uri lastPathComponent] stringByDeletingPathExtension];
 		}
 		
 		unsigned total = mpd_song_get_duration(data);

@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Status.h"
-#import "Status+Internals.h"
+#import "MDStatus.h"
+#import "MDStatus+Internals.h"
 
-@implementation Status
+@implementation MDStatus
 @synthesize data, state;
 
 - (id)initWithStatusData:(struct mpd_status *)origin {

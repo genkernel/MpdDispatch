@@ -6,12 +6,12 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Helper.h"
-#import "Song.h"
-#import "Status.h"
-#import "Playlist.h"
+#import "MDHelper.h"
+#import "MDSong.h"
+#import "MDStatus.h"
+#import "MDPlaylist.h"
 
-@interface Player : Helper
+@interface MDPlayer : MDHelper
 - (BOOL)stop;
 - (BOOL)play;
 - (BOOL)pause;
@@ -19,12 +19,14 @@
 - (BOOL)next;
 - (BOOL)prev;
 - (BOOL)addURI:(NSString *)uri;
+- (BOOL)addURI:(NSString *)uri toPosition:(NSUInteger)pos;
+- (BOOL)removeSong:(MDSong *)song;
 - (BOOL)loadAndPlayURI:(NSString *)uri;
-- (BOOL)playSong:(Song *)song;
+- (BOOL)playSong:(MDSong *)song;
 - (void)update;
 - (BOOL)clearQueue;
-- (BOOL)removeFromQueue:(Song *)song;
-- (BOOL)moveSong:(Song *)song toPosition:(NSUInteger)pos;
+- (BOOL)removeFromQueue:(MDSong *)song;
+- (BOOL)moveSong:(MDSong *)song toPosition:(NSUInteger)pos;
 - (BOOL)setVolume:(NSUInteger)volume;
 - (void)setShouldRepeat:(BOOL)mode;
 - (void)setShouldPlayRandom:(BOOL)mode;
@@ -32,17 +34,17 @@
 
 // Playlists-related methods.
 - (BOOL)savePlaylistWithName:(NSString *)name;
-- (BOOL)loadPlaylist:(Playlist *)playlist;
+- (BOOL)loadPlaylist:(MDPlaylist *)playlist;
 //- (BOOL)clearPlaylistWithName:(NSString *)name;
 - (NSArray *)loadPlaylistsLists;
 
 @property (strong, nonatomic, readonly) NSArray *queue, *playlists;
-@property (strong, nonatomic, readonly) Status *status;
-@property (strong, nonatomic, readonly) Song *currentSong;
+@property (strong, nonatomic, readonly) MDStatus *status;
+@property (strong, nonatomic, readonly) MDSong *currentSong;
 @property (assign, nonatomic, readonly) BOOL repeat, random;
 @property (assign, nonatomic, readonly) NSUInteger volume;
 // seek. Duration progress for currentSong.
-@property (assign, nonatomic, readonly) NSUInteger seek;
+@property (assign, nonatomic, readonly) NSUInteger seek, kBitRate;
 @property (assign, nonatomic) BOOL autoplay;
 @property (assign, nonatomic, readonly, getter=isPlaying) BOOL playing;
 @end

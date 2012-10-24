@@ -6,13 +6,16 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Song.h"
+#import "MDSong.h"
 
-@interface LibraryItems : NSObject
+@interface MDLibraryItems : NSObject
 @property (strong, nonatomic, readonly) NSArray *sections, *sectionIndexTitles;
 
 - (id)initWithSortingTag:(SongTags)tag;
-- (Song *)itemForSection:(NSUInteger)section atRow:(NSUInteger)row;
+- (MDSong *)itemForSection:(NSUInteger)section atRow:(NSUInteger)row;
+
+- (NSArray *)sectionItemsForSection:(NSUInteger)section;
 - (NSArray *)itemsForSection:(NSUInteger)section;
+
 - (NSInteger)sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index;
 @end

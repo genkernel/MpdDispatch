@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 DemoApp. All rights reserved.
 //
 
-#import "Helper.h"
-#import "Song.h"
-#import "Library.h"
+#import "MDHelper.h"
+#import "MDSong.h"
+#import "MDLibrary.h"
 
-@interface Directory : Helper
+@interface MDDirectory : MDHelper
 @property (strong, nonatomic, readonly) NSDictionary *directories;
 @property (strong, nonatomic, readonly) NSDictionary *songs;
 @property (strong, nonatomic, readonly) NSDictionary *playlists;
@@ -18,6 +18,6 @@
 - (BOOL)rescan;
 - (BOOL)rescanCheckingUnmodifiedFiles:(BOOL)force;
 - (BOOL)loadAll;
-- (Library *)loadRootLibrary;
-- (Library *)loadLibraryForDirectoryPath:(NSString *)path;
+- (MDLibrary *)loadRootLibrary;
+- (MDLibrary *)loadLibraryForDirectoryPath:(NSString *)path;
 @end
